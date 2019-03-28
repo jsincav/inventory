@@ -5,6 +5,16 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+export default {
+  name: "app",
+  created() {
+    this.connectWebsocket();
+  },
+  methods: {
+    ...mapActions(["connectWebsocket"])
+  }
+};
 </script>
 
 <style lang="scss">

@@ -1,41 +1,48 @@
 <template>
-  <div id="table">
+  <div>
     <button id="add-item-button" class="btn btn-success" @click="addItem">Add Item</button>
-    <table-component
-      :data="inventoryData"
-      sort-by="id"
-      sort-order="asc"
-      table-class="table table-striped"
-      thead-class="table-head"
-      filter-input-class="form-control search-input"
-    >
-      <table-column show="id" label="id"></table-column>
-      <table-column show="device" label="Device Type"></table-column>
-      <table-column show="serial" label="Serial Number"></table-column>
-      <table-column show="date" label="Date Added" data-type="date:DD/MM/YYYY"></table-column>
-      <table-column :sortable="false" :filterable="false">
-        <template slot-scope="item">
-          <a href="#" @click="editItem(item)">Edit</a>
-        </template>
-      </table-column>
-    </table-component>
+    <div id="table">
+      <table-component
+        :data="inventoryData"
+        sort-by="id"
+        sort-order="asc"
+        table-class="table table-striped"
+        thead-class="table-head"
+        filter-input-class="form-control search-input"
+      >
+        <table-column show="id" label="id"></table-column>
+        <table-column show="device" label="Device Type"></table-column>
+        <table-column show="serial" label="Serial Number"></table-column>
+        <table-column show="date" label="Date Added" data-type="date:DD/MM/YYYY"></table-column>
+        <table-column :sortable="false" :filterable="false">
+          <template slot-scope="item">
+            <a href="#" @click="editItem(item)">Edit</a>
+          </template>
+        </table-column>
+      </table-component>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState } from "vuex";
 export default {
   props: [],
   data() {
     return {};
   },
   computed: {
-    ...mapState(["inventoryData"])
+    ...mapState(["inventoryData", "websocket"])
   },
   created() {},
   methods: {
     addItem() {
       console.log("add item");
+      console.log(this.websocket);
+      this.websocket.json({
+        action: "addItem",
+        data: "Hello World"
+      });
     },
     editItem(item) {
       console.log(item);
@@ -47,12 +54,12 @@ export default {
 @import "lingraphica-sass";
 
 #table {
-  margin-top: -35px;
+  margin-top: -38px;
 }
 
 #add-item-button {
   position: relative;
-  top: 38px;
+  z-index: 1;
 }
 
 *,

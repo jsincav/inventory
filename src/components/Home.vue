@@ -7,10 +7,14 @@
 
 <script>
 import table from "@/components/table/Table";
+import { mapState } from "vuex";
 export default {
   name: "home",
   components: {
     appTable: table
+  },
+  computed: {
+    ...mapState(["websocket"])
   }
 };
 </script>
