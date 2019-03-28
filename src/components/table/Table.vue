@@ -10,7 +10,7 @@
         thead-class="table-head"
         filter-input-class="form-control search-input"
       >
-        <table-column show="id" label="id"></table-column>
+        <table-column show="id" label="id" data-type="numeric"></table-column>
         <table-column show="device" label="Device Type"></table-column>
         <table-column show="serial" label="Serial Number"></table-column>
         <table-column show="date" label="Date Added" data-type="date:DD/MM/YYYY"></table-column>
@@ -37,11 +37,23 @@ export default {
   created() {},
   methods: {
     addItem() {
-      console.log("add item");
-      console.log(this.websocket);
+      var ids = [];
+      for (var i = 0; i < this.inventoryData.length; i++) {
+        ids.push(this.inventoryData[i].id);
+      }
+      var nextId = Math.max(...ids) + 1;
+      var obj = {
+        eventType: "addItem",
+        data: {
+          id: nextId,
+          device: `TouchTalk ${nextId}`,
+          serial: `${nextId}${nextId + 1}345`,
+          date: "12/25/2020"
+        }
+      };
       this.websocket.json({
         action: "addItem",
-        data: "Hello World"
+        data: JSON.stringify(obj)
       });
     },
     editItem(item) {

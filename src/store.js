@@ -7,16 +7,19 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
 		inventoryData: [
-			{ id: '1', device: 'AllTalk', serial: '12345DUB', date: '07/07/2019' },
-			{ id: '2', device: 'TouchTalk', serial: 'T34732', date: '09/20/2019' },
-			{ id: '3', device: 'TouchTalk', serial: '96385DTB', date: '03/05/2018' },
-			{ id: '4', device: 'MiniTalk', serial: '45744DTM', date: '12/15/2020' }
+			{ id: 1, device: 'AllTalk', serial: '12345DUB', date: '07/07/2019' },
+			{ id: 2, device: 'TouchTalk', serial: 'T34732', date: '09/20/2019' },
+			{ id: 3, device: 'TouchTalk', serial: '96385DTB', date: '03/05/2018' },
+			{ id: 4, device: 'MiniTalk', serial: '45744DTM', date: '12/15/2020' }
 		],
 		websocket: null
 	},
 	mutations: {
 		setInventoryData(state, data) {
 			state.inventoryData = data;
+		},
+		addItem(state, item) {
+			state.inventoryData.push(item);
 		},
 		setWebsocket(state, data) {
 			state.websocket = data;
@@ -32,7 +35,9 @@ export default new Vuex.Store({
 					commit('setWebsocket', ws);
 				},
 				onmessage: (e) => {
-					console.log('Message Received:', e);
+					console.log('Message Received:', JSON.parse(e.data));
+					var item = JSON.parse(e.data).data;
+					commit('addItem', item);
 				},
 				onreconnect: (e) => console.log('Reconnecting...', e),
 				onmaximum: (e) => console.log('Stop Attempting!', e),
