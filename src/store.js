@@ -16,10 +16,21 @@ export default new Vuex.Store({
 		pushInventoryItem(state, item) {
 			state.inventoryData.push(item);
 		},
+		deleteInventoryItem(state, item) {
+			state.inventoryData = state.inventoryData.filter(function(obj) {
+				return obj.id != item.id;
+			});
+		},
 		socketAddItem(state, item) {
 			state.websocket.json({
 				action: 'addItem',
 				data: item
+			});
+		},
+		socketDeleteItem(state, id) {
+			state.websocket.json({
+				action: 'deleteItem',
+				data: id
 			});
 		},
 		setWebsocket(state, data) {
@@ -44,7 +55,6 @@ export default new Vuex.Store({
 				onmessage: (e) => {
 					console.log('Message Received:', e);
 					var data = JSON.parse(e.data);
-					console.log(JSON.parse(data.data));
 					var action = data.action;
 					var returnedData = JSON.parse(data.data);
 
@@ -53,6 +63,9 @@ export default new Vuex.Store({
 					}
 					if (action === 'addItem') {
 						commit('pushInventoryItem', returnedData);
+					}
+					if (action === 'deleteItem') {
+						commit('deleteInventoryItem', returnedData);
 					}
 				},
 				onreconnect: (e) => console.log('Reconnecting...', e),

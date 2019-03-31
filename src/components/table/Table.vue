@@ -16,7 +16,7 @@
         <table-column show="date" label="Date Added" data-type="date:DD/MM/YYYY"></table-column>
         <table-column :sortable="false" :filterable="false">
           <template slot-scope="item">
-            <a href="#" @click="editItem(item)">Edit</a>
+            <a href="#" @click="deleteItem(item)">Delete</a>
           </template>
         </table-column>
       </table-component>
@@ -36,7 +36,7 @@ export default {
   },
   created() {},
   methods: {
-    ...mapMutations(["socketAddItem"]),
+    ...mapMutations(["socketAddItem", "socketDeleteItem"]),
     addItem() {
       this.socketAddItem({
         device_type: `TouchTalk`,
@@ -44,8 +44,10 @@ export default {
         date: "12/25/2020"
       });
     },
-    editItem(item) {
-      console.log(item);
+    deleteItem(item) {
+      this.socketDeleteItem({
+        id: item.id
+      });
     }
   }
 };
