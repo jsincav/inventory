@@ -6,23 +6,29 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
-		inventoryData: [
-			{ id: 1, device: 'AllTalk', serial: '12345DUB', date: '07/07/2019' },
-			{ id: 2, device: 'TouchTalk', serial: 'T34732', date: '09/20/2019' },
-			{ id: 3, device: 'TouchTalk', serial: '96385DTB', date: '03/05/2018' },
-			{ id: 4, device: 'MiniTalk', serial: '45744DTM', date: '12/15/2020' }
-		],
+		inventoryData: [],
 		websocket: null
 	},
 	mutations: {
 		setInventoryData(state, data) {
 			state.inventoryData = data;
 		},
-		addItem(state, item) {
+		pushInventoryItem(state, item) {
 			state.inventoryData.push(item);
+		},
+		socketAddItem(state, item) {
+			state.websocket.json({
+				action: 'addItem',
+				data: item
+			});
 		},
 		setWebsocket(state, data) {
 			state.websocket = data;
+		},
+		getInventory(state) {
+			state.websocket.json({
+				action: 'getInventory'
+			});
 		}
 	},
 	actions: {
@@ -33,11 +39,21 @@ export default new Vuex.Store({
 				onopen: (e) => {
 					console.log('connected:', e);
 					commit('setWebsocket', ws);
+					commit('getInventory');
 				},
 				onmessage: (e) => {
-					console.log('Message Received:', JSON.parse(e.data));
-					var item = JSON.parse(e.data).data;
-					commit('addItem', item);
+					console.log('Message Received:', e);
+					var data = JSON.parse(e.data);
+					console.log(JSON.parse(data.data));
+					var action = data.action;
+					var returnedData = JSON.parse(data.data);
+
+					if (action === 'getInventory') {
+						commit('setInventoryData', returnedData);
+					}
+					if (action === 'addItem') {
+						commit('pushInventoryItem', returnedData);
+					}
 				},
 				onreconnect: (e) => console.log('Reconnecting...', e),
 				onmaximum: (e) => console.log('Stop Attempting!', e),
